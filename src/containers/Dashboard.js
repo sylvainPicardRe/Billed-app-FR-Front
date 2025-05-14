@@ -86,17 +86,31 @@ export default class {
   }
 
   handleEditTicket(e, bill, bills) {
-    if (this.counter === undefined || this.id !== bill.id) this.counter = 0
-    if (this.id === undefined || this.id !== bill.id) this.id = bill.id
+    if (this.id !== bill.id) this.counter = 0    
+    if (this.id !== bill.id) this.id = bill.id
+    // Si le compteur est pair, la facture est sélectionnée
     if (this.counter % 2 === 0) {
+      console.log('element cliqué')
+
+      // Réinitialisation du fond de toutes les factures à la couleur #0D5AE5
       bills.forEach(b => {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
+      
+      // Changement du fond de la facture sélectionnée pour indiquer sa sélection
       $(`#open-bill${bill.id}`).css({ background: '#2A2B35' })
+
+
+    // Mise à jour du contenu de la section droite du tableau de bord avec le formulaire de la facture
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
+
+      // Ajustement de la hauteur de la barre de navigation verticale
       $('.vertical-navbar').css({ height: '150vh' })
+       
+      // Incrémentation du compteur
       this.counter ++
     } else {
+      console.log("désélection de la facture")
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
       $('.dashboard-right-container div').html(`
@@ -131,14 +145,18 @@ export default class {
   }
 
   handleShowTickets(e, bills, index) {
+    
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0) {
-      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
+      //affiche la liste des la facture
+      $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'}) 
       $(`#status-bills-container${this.index}`)
         .html(cards(filteredBills(bills, getStatus(this.index))))
       this.counter ++
+      console.log('affiche la liste des la facture')
     } else {
+      console.log('vide la liste')
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`)
         .html("")
@@ -146,8 +164,14 @@ export default class {
     }
 
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    })
+      // Sélectionne l'élément du DOM avec l'ID 'open-bill' suivi de l'ID de la facture
+      $(`#open-bill${bill.id}`)
+      // Supprime tout gestionnaire d'événement 'click' existant sur cet élément
+      .off('click')
+      // Ajoute un nouveau gestionnaire d'événement 'click'
+      .on('click', (e) => this.handleEditTicket(e, bill, bills));
+    });
+    
 
     return bills
 

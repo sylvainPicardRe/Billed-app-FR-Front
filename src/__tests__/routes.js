@@ -45,7 +45,7 @@ describe('Given I am connected and I am on some page of the app', () => {
         loading,
         error
        })
-       document.body.innerHTML = html
+       ERRORUI.innerHTML = html
        expect(screen.getAllByText('Envoyer une note de frais')).toBeTruthy()
     })
   })
